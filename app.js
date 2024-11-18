@@ -89,7 +89,9 @@ let secondInfo = document.querySelector(".second-info");
 firstInfo.textContent = "1 RUB = 0.0135 USD";
 secondInfo.textContent = "1 USD = 73.8896 RUB";
 let newValue1;
-let newValue2
+let newValue2;
+let firstInputUpdate;
+let secondInputUpdate;
 let rate
   let buttons1 = document.querySelectorAll(".buttons1 button");
   buttons1.forEach(button => {
@@ -114,7 +116,7 @@ let rate
         button.style.backgroundColor = "#833ae0";
         button.style.color = "white";
         n = button.textContent;
-        exchangeCurrency(n ,m);
+        exchangeCurrency(m, n);
     })
   })
 
@@ -130,25 +132,35 @@ let rate
             rate = exchangeRate.USD;
             newValue1 = `1 ${firstCurrency} = ${rate} ${secondCurrency}`
             newValue2 = `1 ${secondCurrency} = ${(1 / rate).toFixed(5)} ${firstCurrency}`;
+            secondInputUpdate = firstInput.value * rate
+            firstInputUpdate = secondInput.value * rate
             console.log(`1 ${firstCurrency} = ${rate} ${secondCurrency}`);
         }else if(secondCurrency == "RUB"){
             rate = exchangeRate.RUB;
             newValue1 = `1 ${firstCurrency} = ${rate} ${secondCurrency}`
             newValue2 = `1 ${secondCurrency} = ${(1 / rate).toFixed(5)} ${firstCurrency}`;
+            secondInputUpdate = firstInput.value * rate
+            firstInputUpdate = secondInput.value * rate
             console.log(`1 ${firstCurrency} = ${rate} ${secondCurrency}`);       
         }else if(secondCurrency == "EUR"){
             rate = exchangeRate.EUR;
             newValue1 = `1 ${firstCurrency} = ${rate} ${secondCurrency}`
             newValue2 = `1 ${secondCurrency} = ${(1 / rate).toFixed(5)} ${firstCurrency}`;
+            secondInputUpdate = firstInput.value * rate
+            firstInputUpdate = secondInput.value * rate
             console.log(`1 ${firstCurrency} = ${rate} ${secondCurrency}`);           
         }else if(secondCurrency == "GBP"){
             rate = exchangeRate.GBP;
             newValue1 = `1 ${firstCurrency} = ${rate} ${secondCurrency}`
             newValue2 = `1 ${secondCurrency} = ${(1 / rate).toFixed(5)} ${firstCurrency}`;
+            secondInputUpdate = firstInput.value * rate
+            firstInputUpdate = secondInput.value * rate
             console.log(`1 ${firstCurrency} = ${rate} ${secondCurrency}`);           
         }
         firstInfo.textContent = newValue1;
         secondInfo.textContent = newValue2;
+        // secondInput.value = secondInputUpdate;
+        // firstInput.value = firstInputUpdate
     })
   }
 
