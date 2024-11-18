@@ -1,39 +1,3 @@
-
-    // if (event.key === 'e' || event.key === 'E' || event.key === "+" || event.key === "-" || event.key === "π") {
-    //     event.preventDefault(); // Blocks the key press before it affects the input
-    // }
-    
-// let secondInput = document.querySelector(".second-input");
-// let firstInput = document.querySelector(".first-input");
-// firstInput.value = 5000;
-// secondInput.value = 67.6685;
-// function input(event){
-//     const inputValue = event.target.value;
-//     const checkInput = inputValue.replace(/[^0-9]/g , "")
-//     if(inputValue !== checkInput){
-//         event.target.value = checkInput
-//     }
-// }
-// firstInput.addEventListener("input" , input)
-
-// let firstInput = document.querySelector(".first-input");
-// let secondInput = document.querySelector(".second-input");
-
-// firstInput.value = 5000;
-// secondInput.value = 67.6685;
-
-// function checkInput(event) {
-//     const inputValue = event.target.value;
-//     const checkInput = inputValue.replace(/[^0-9]/g , "")
-//     if(inputValue !== checkInput){
-//         event.preventDefault()
-//     }
-// }
-
-// firstInput.addEventListener("keydown", checkInput);
-
-
-
   let firstInput = document.querySelector(".first-input");
   let secondInput = document.querySelector(".second-input");
 
@@ -118,7 +82,15 @@ firstInput.addEventListener("keydown", (event) => {
     headerMenuList.classList.toggle("header-list")
   })
 
-
+let m = "RUB";
+let n = "USD";
+let firstInfo = document.querySelector(".first-info");
+let secondInfo = document.querySelector(".second-info");
+firstInfo.textContent = "1 RUB = 0.0135 USD";
+secondInfo.textContent = "1 USD = 73.8896 RUB";
+let newValue1;
+let newValue2
+let rate
   let buttons1 = document.querySelectorAll(".buttons1 button");
   buttons1.forEach(button => {
     button.addEventListener("click" , () => {
@@ -128,6 +100,8 @@ firstInput.addEventListener("keydown", (event) => {
         })
         button.style.backgroundColor = "#833ae0";
         button.style.color = "white";
+        m = button.textContent;
+        exchangeCurrency(m , n)
     })
   })
   let buttons2 = document.querySelectorAll(".buttons2 button");
@@ -139,5 +113,43 @@ firstInput.addEventListener("keydown", (event) => {
         })
         button.style.backgroundColor = "#833ae0";
         button.style.color = "white";
+        n = button.textContent;
+        exchangeCurrency(n ,m);
     })
   })
+
+
+  let obj = {}
+  function exchangeCurrency(firstCurrency , secondCurrency){
+    let url = "https://v6.exchangerate-api.com/v6/53d8317136c6b635566c64f4/latest/"
+    fetch(`${url}${firstCurrency}`)
+    .then(res => res.json())
+    .then(data => {
+        exchangeRate = data.conversion_rates;
+        if(secondCurrency == "USD"){
+            rate = exchangeRate.USD;
+            newValue1 = `1 ${firstCurrency} = ${rate} ${secondCurrency}`
+            newValue2 = `1 ${secondCurrency} = ${(1 / rate).toFixed(5)} ${firstCurrency}`;
+            console.log(`1 ${firstCurrency} = ${rate} ${secondCurrency}`);
+        }else if(secondCurrency == "RUB"){
+            rate = exchangeRate.RUB;
+            newValue1 = `1 ${firstCurrency} = ${rate} ${secondCurrency}`
+            newValue2 = `1 ${secondCurrency} = ${(1 / rate).toFixed(5)} ${firstCurrency}`;
+            console.log(`1 ${firstCurrency} = ${rate} ${secondCurrency}`);       
+        }else if(secondCurrency == "EUR"){
+            rate = exchangeRate.EUR;
+            newValue1 = `1 ${firstCurrency} = ${rate} ${secondCurrency}`
+            newValue2 = `1 ${secondCurrency} = ${(1 / rate).toFixed(5)} ${firstCurrency}`;
+            console.log(`1 ${firstCurrency} = ${rate} ${secondCurrency}`);           
+        }else if(secondCurrency == "GBP"){
+            rate = exchangeRate.GBP;
+            newValue1 = `1 ${firstCurrency} = ${rate} ${secondCurrency}`
+            newValue2 = `1 ${secondCurrency} = ${(1 / rate).toFixed(5)} ${firstCurrency}`;
+            console.log(`1 ${firstCurrency} = ${rate} ${secondCurrency}`);           
+        }
+        firstInfo.textContent = newValue1;
+        secondInfo.textContent = newValue2;
+    })
+  }
+
+ 
