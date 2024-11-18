@@ -1,0 +1,225 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+*{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+body{
+    font-family: "Roboto", serif;
+}
+header{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 50px;
+}
+.header-container{
+    width: 85%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+.bank-icon{
+    position: absolute;
+    left: 0;
+}
+.header-container p , li{
+    font-size: 11px;
+}
+.menu-button{
+    display: none;
+}
+.header-menu{
+    width: 67%;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    margin-right: 2rem;
+    position: relative;
+}
+.header-menu-list{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    list-style: none;
+}
+.header-menu li {
+    color: #959BA4;
+}
+.header-menu li:first-child{
+    color: black;
+    font-weight: bold;
+}
+.header-exit{
+    position: absolute;
+    right: 0;
+    text-align: center;
+    line-height: 33px;
+    width: 58px;
+}
+.header-exit p{
+    font-size: 11px;
+    font-weight: 500;
+}
+.bank-icon img{
+    height: 23px;
+    width: 89px;
+}
+
+@media screen and (max-width: 850px){
+    .header-container{
+        justify-content: flex-end;
+    }
+    .header-menu{
+        justify-content: flex-end;
+        margin-right: 60px;
+    }
+    .menu-button{
+        display: flex;
+        align-items: center;
+    }
+    .menu-button img{
+        width: 23px;
+    }
+    .header-menu-list{
+        display: none;
+        width: 100%;
+    }
+    .header-list{
+        display: flex;
+        flex-direction: column;
+        width: 150px;
+        position: absolute;
+        z-index: 1000000000;
+        top: 40px;
+        right: 0;
+        flex-direction: column;
+        background-color: white;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        padding: 10px;
+    }
+}
+
+
+.wrapper{
+    display: flex;
+    justify-content: center;
+    width: 100vw;
+    height: 100vh;
+    margin-top: 50px;
+}
+.container{
+    width: 100%;
+    max-width: 650px;
+    height: 246px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+h1{
+    height: 32px;
+}
+.boxes{
+    width: 100%;
+    height: 181px;
+    display: flex;
+    justify-content: space-between;
+    align-content: space-between;
+    gap: 15%;
+}
+.first-box , .second-box{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    /* width: 259px; */
+    flex: 1;
+    height: 181px;
+    gap: 15px;
+}
+.first-box p, .second-box p{
+    color: #9F9F9F;
+    font-size: 12px;
+}
+.buttons{
+    display: flex;
+    width: 100%;
+    height: 30px;
+    border: 1px solid #C6C6C6;  
+    border-radius: 3px;
+}
+.buttons button:first-child{ 
+    border: none;   
+    border-radius: 2px 0 0 2px;
+}
+.buttons button:last-child{ 
+    border: none;   
+    border-radius: 0 2px 2px 0;
+}
+.buttons button{
+    border: none;   
+    flex: 1; 
+    background-color: white;
+    color: #C6C6C6;
+}
+.input-box{
+    width: 100%;
+    height: 102px;
+    border: 1px solid #C6C6C6;
+    border-radius: 3px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.input{
+    height: 44px;
+    padding: 3px;
+    width: 97%;
+    font-size: 36px;
+    font-weight: bold;
+    border: none;
+}
+.input-box p{
+    color: #C6C6C6;
+}
+
+
+button.chosen-button{
+    color: white;
+    background-color: #833ae0;
+}
+@media screen and (max-width: 700px){
+     .wrapper{
+        justify-content: center;
+     }
+    .container{
+        height: 430px;
+        width: 85%;
+        gap: 20px;
+        justify-content: space-between;
+        align-content: center;
+     }
+    .boxes{
+        width: 300px;
+        flex-direction: column;
+        height: auto;
+        gap: 25px;
+    }
+    h1{
+        font-size: 30px;
+    }
+}
+@media screen and (max-width: 419px){
+    .container{
+        height: 450px;
+    }
+    .boxes{
+        margin-top: 20px;
+        width: 200px;
+    }
+}
