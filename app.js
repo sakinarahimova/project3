@@ -1,11 +1,12 @@
-  let firstInput = document.querySelector(".first-input");
-  let secondInput = document.querySelector(".second-input");
-
-  firstInput.value = 5000;
-  secondInput.value = 67.6685;
+let firstInput = document.querySelector(".first-input");
+let secondInput = document.querySelector(".second-input");
+let checkInputSource;
+firstInput.value = 5000;
+secondInput.value = 67.6685;
 
 
 firstInput.addEventListener("keydown", (event) => {
+    checkInputSource = "first"
     let k = event.key;
     let changedInp = k.replace(/[0-9,\.]/, '');
     if (k === "Backspace" || k === "Delete" || k === "ArrowLeft" || k === "ArrowRight") {
@@ -37,11 +38,15 @@ firstInput.addEventListener("keydown", (event) => {
             }
         }
     }
-  });
+});
   
-  secondInput.addEventListener("keydown", (event) => {
+secondInput.addEventListener("keydown", (event) => {
+    checkInputSource = "second"
     let k = event.key;
     let changedInp = k.replace(/[0-9,\.]/, '');
+    // if (secondInput.value[0] == "0" && secondInput.value.length > 1) {
+    //     secondInput.value = secondInput.value.replace(/^0+/, "");
+    // }
     if (k === "Backspace" || k === "Delete" || k === "ArrowLeft" || k === "ArrowRight") {
         return;
     }
@@ -71,16 +76,16 @@ firstInput.addEventListener("keydown", (event) => {
             }
         }
     }
-  });
+});
   
 
 
 
-  let menuButton = document.querySelector(".menu-button");
-  let headerMenuList = document.querySelector(".header-menu-list");
-  menuButton.addEventListener("click" , () => {
+let menuButton = document.querySelector(".menu-button");
+let headerMenuList = document.querySelector(".header-menu-list");
+menuButton.addEventListener("click" , () => {
     headerMenuList.classList.toggle("header-list")
-  })
+})
 
 let m = "RUB";
 let n = "USD";
@@ -92,9 +97,66 @@ let newValue1;
 let newValue2;
 let firstInputUpdate;
 let secondInputUpdate;
-let rate
-  let buttons1 = document.querySelectorAll(".buttons1 button");
-  buttons1.forEach(button => {
+let rate;
+let buttons1 = document.querySelectorAll(".buttons1 button");
+let buttons2 = document.querySelectorAll(".buttons2 button");
+
+
+
+firstInput.addEventListener("input" , () => {
+    let url = "https://v6.exchangerate-api.com/v6/53d8317136c6b635566c64f4/latest/"
+    fetch(`${url}${m}`)
+    .then((res) => res.json())
+    .then((data) => {
+            const exchangeRates = data.conversion_rates;
+            let currentRate;
+            if (n === "USD") {
+                currentRate = exchangeRates.USD;
+            } else if (n === "RUB") {
+                currentRate = exchangeRates.RUB;
+            } else if (n === "EUR") {
+                currentRate = exchangeRates.EUR;
+            } else if (n === "GBP") {
+                currentRate = exchangeRates.GBP;
+            }    
+            secondInput.value = (firstInput.value * currentRate).toFixed(5);
+            firstInfo.textContent = `1 ${m} = ${currentRate} ${n}`;
+            secondInfo.textContent = `1 ${n} = ${(1 / currentRate).toFixed(5)} ${m}`;
+    })
+    .catch((error) => {
+        console.error("Error", error);
+    }); 
+})
+
+secondInput.addEventListener("input" , () => {
+    let url = "https://v6.exchangerate-api.com/v6/53d8317136c6b635566c64f4/latest/"
+    fetch(`${url}${m}`)
+    .then((res) => res.json())
+    .then((data) => {
+            const exchangeRates = data.conversion_rates;
+            let currentRate;
+            if (n === "USD") {
+                currentRate = exchangeRates.USD;
+            } else if (n === "RUB") {
+                currentRate = exchangeRates.RUB;
+            } else if (n === "EUR") {
+                currentRate = exchangeRates.EUR;
+            } else if (n === "GBP") {
+                currentRate = exchangeRates.GBP;
+            }    
+            firstInput.value = (secondInput.value / currentRate).toFixed(5);
+            firstInfo.textContent = `1 ${m} = ${currentRate} ${n}`;
+            secondInfo.textContent = `1 ${n} = ${(1 / currentRate).toFixed(5)} ${m}`;
+    })
+    .catch((error) => {
+        console.error("Error", error);
+    }); 
+})
+
+
+
+
+buttons1.forEach(button => {
     button.addEventListener("click" , () => {
         buttons1.forEach(btn1 => {
             btn1.style.backgroundColor = "white";
@@ -103,11 +165,36 @@ let rate
         button.style.backgroundColor = "#833ae0";
         button.style.color = "white";
         m = button.textContent;
-        exchangeCurrency(m , n)
+    let url = "https://v6.exchangerate-api.com/v6/53d8317136c6b635566c64f4/latest/"
+        fetch(`${url}${m}`)
+        .then((res) => res.json())
+        .then((data) => {
+            const exchangeRates = data.conversion_rates;
+            let currentRate;
+            if (n === "USD") {
+                currentRate = exchangeRates.USD;
+            } else if (n === "RUB") {
+                currentRate = exchangeRates.RUB;
+            } else if (n === "EUR") {
+                currentRate = exchangeRates.EUR;
+            } else if (n === "GBP") {
+                currentRate = exchangeRates.GBP;
+            }
+
+            newValue1 = `1 ${m} = ${currentRate} ${n}`;
+            newValue2 = `1 ${n} = ${(1 / currentRate).toFixed(5)} ${m}`;
+            firstInfo.textContent = newValue1;
+            secondInfo.textContent = newValue2;
+            if(checkInputSource = "first" || checkInputSource == ""){
+                secondInput.value = (firstInput.value * currentRate).toFixed(5);
+            }
+        })
+        .catch((error) => {
+            console.error("Error", error);
+        });
     })
-  })
-  let buttons2 = document.querySelectorAll(".buttons2 button");
-  buttons2.forEach(button => {
+})
+buttons2.forEach(button => {
     button.addEventListener("click" , () => {
         buttons2.forEach(btn2 => {
             btn2.style.backgroundColor = "white";
@@ -116,52 +203,34 @@ let rate
         button.style.backgroundColor = "#833ae0";
         button.style.color = "white";
         n = button.textContent;
-        exchangeCurrency(m, n);
+        let url = "https://v6.exchangerate-api.com/v6/53d8317136c6b635566c64f4/latest/"
+        fetch(`${url}${m}`)
+        .then((res) => res.json())
+        .then((data) => {
+                const exchangeRates = data.conversion_rates;
+                let currentRate;
+                if (n === "USD") {
+                    currentRate = exchangeRates.USD;
+                } else if (n === "RUB") {
+                    currentRate = exchangeRates.RUB;
+                } else if (n === "EUR") {
+                    currentRate = exchangeRates.EUR;
+                } else if (n === "GBP") {
+                    currentRate = exchangeRates.GBP;
+                }    
+                newValue1 = `1 ${m} = ${currentRate} ${n}`;
+                newValue2 = `1 ${n} = ${(1 / currentRate).toFixed(5)} ${m}`;
+                firstInfo.textContent = newValue1;
+                secondInfo.textContent = newValue2;
+                if(checkInputSource = "second"){
+                    firstInput.value = (secondInput.value * currentRate).toFixed(5);
+                }else{
+                    secondInput.value = (firstInput.value * currentRate).toFixed(5);
+                }
+        })
+        .catch((error) => {
+            console.error("Error", error);
+        });
     })
-  })
+})
 
-
-  let obj = {}
-  function exchangeCurrency(firstCurrency , secondCurrency){
-    let url = "https://v6.exchangerate-api.com/v6/53d8317136c6b635566c64f4/latest/"
-    fetch(`${url}${firstCurrency}`)
-    .then(res => res.json())
-    .then(data => {
-        exchangeRate = data.conversion_rates;
-        if(secondCurrency == "USD"){
-            rate = exchangeRate.USD;
-            newValue1 = `1 ${firstCurrency} = ${rate} ${secondCurrency}`
-            newValue2 = `1 ${secondCurrency} = ${(1 / rate).toFixed(5)} ${firstCurrency}`;
-            secondInputUpdate = firstInput.value * rate
-            firstInputUpdate = secondInput.value * rate
-            console.log(`1 ${firstCurrency} = ${rate} ${secondCurrency}`);
-        }else if(secondCurrency == "RUB"){
-            rate = exchangeRate.RUB;
-            newValue1 = `1 ${firstCurrency} = ${rate} ${secondCurrency}`
-            newValue2 = `1 ${secondCurrency} = ${(1 / rate).toFixed(5)} ${firstCurrency}`;
-            secondInputUpdate = firstInput.value * rate
-            firstInputUpdate = secondInput.value * rate
-            console.log(`1 ${firstCurrency} = ${rate} ${secondCurrency}`);       
-        }else if(secondCurrency == "EUR"){
-            rate = exchangeRate.EUR;
-            newValue1 = `1 ${firstCurrency} = ${rate} ${secondCurrency}`
-            newValue2 = `1 ${secondCurrency} = ${(1 / rate).toFixed(5)} ${firstCurrency}`;
-            secondInputUpdate = firstInput.value * rate
-            firstInputUpdate = secondInput.value * rate
-            console.log(`1 ${firstCurrency} = ${rate} ${secondCurrency}`);           
-        }else if(secondCurrency == "GBP"){
-            rate = exchangeRate.GBP;
-            newValue1 = `1 ${firstCurrency} = ${rate} ${secondCurrency}`
-            newValue2 = `1 ${secondCurrency} = ${(1 / rate).toFixed(5)} ${firstCurrency}`;
-            secondInputUpdate = firstInput.value * rate
-            firstInputUpdate = secondInput.value * rate
-            console.log(`1 ${firstCurrency} = ${rate} ${secondCurrency}`);           
-        }
-        firstInfo.textContent = newValue1;
-        secondInfo.textContent = newValue2;
-        // secondInput.value = secondInputUpdate;
-        // firstInput.value = firstInputUpdate
-    })
-  }
-
- 
