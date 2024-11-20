@@ -1,9 +1,43 @@
+let footer = document.querySelector("footer");
+fetch("https://v6.exchangerate-api.com/v6/9e5585c35cd27d91d15a7b53/latest/USD")
+.then(() => console.log("Fetch was successful"))
+.catch((error) => {
+    console.error("Error t", error);
+    if (error == "TypeError: Failed to fetch"){
+        console.log("tt");
+        footer.style.display = "flex"
+        
+    }
+});
+let menuButton = document.querySelector(".menu-button");
+let headerMenuList = document.querySelector(".header-menu-list");
+menuButton.addEventListener("click" , () => {
+    headerMenuList.classList.toggle("header-list")
+})
+
 let firstInput = document.querySelector(".first-input");
 let secondInput = document.querySelector(".second-input");
-let checkInputSource;
-firstInput.value = 5000;
-secondInput.value = 67.6685;
+let checkInputSource = "";
 
+let firstInfo = document.querySelector(".first-info");
+let secondInfo = document.querySelector(".second-info");
+
+let buttons1 = document.querySelectorAll(".buttons1 button");
+let buttons2 = document.querySelectorAll(".buttons2 button");
+
+firstInput.value = 5000;
+secondInput.value = 49.85500;
+
+fetch('https://v6.exchangerate-api.com/v6/9e5585c35cd27d91d15a7b53/latest/RUB')
+.then(res => res.json())
+.then(data => {    
+    const exchangeRates = data.conversion_rates;
+    let currentRate = exchangeRates.USD
+    secondInput.value = (firstInput.value * currentRate).toFixed(5);
+    
+    firstInfo.textContent = `1 RUB = ${currentRate} USD`;
+    secondInfo.textContent = `1 USD = ${(1 / currentRate).toFixed(5)} RUB`;
+})
 
 firstInput.addEventListener("keydown", (event) => {
     checkInputSource = "first"
@@ -81,30 +115,29 @@ secondInput.addEventListener("keydown", (event) => {
 
 
 
-let menuButton = document.querySelector(".menu-button");
-let headerMenuList = document.querySelector(".header-menu-list");
-menuButton.addEventListener("click" , () => {
-    headerMenuList.classList.toggle("header-list")
-})
+
 
 let m = "RUB";
 let n = "USD";
-let firstInfo = document.querySelector(".first-info");
-let secondInfo = document.querySelector(".second-info");
 firstInfo.textContent = "1 RUB = 0.0135 USD";
 secondInfo.textContent = "1 USD = 73.8896 RUB";
-let newValue1;
-let newValue2;
 let firstInputUpdate;
 let secondInputUpdate;
-let rate;
-let buttons1 = document.querySelectorAll(".buttons1 button");
-let buttons2 = document.querySelectorAll(".buttons2 button");
 
 
 
 firstInput.addEventListener("input" , () => {
-    let url = "https://v6.exchangerate-api.com/v6/53d8317136c6b635566c64f4/latest/"
+    // if (firstInput.value === "") {
+    //     firstInput.value = "0";
+    // }
+    // if(firstInput.value[0] == "0" && firstInput.value.length > 1){
+    //     firstInput.value = firstInput.value.replace(/^0+/, "");
+    // }
+    // if (firstInput.value === "0") {
+    //     return;
+    // }
+    checkInputSource = "first"
+    let url = "https://v6.exchangerate-api.com/v6/9e5585c35cd27d91d15a7b53/latest/";
     fetch(`${url}${m}`)
     .then((res) => res.json())
     .then((data) => {
@@ -129,7 +162,8 @@ firstInput.addEventListener("input" , () => {
 })
 
 secondInput.addEventListener("input" , () => {
-    let url = "https://v6.exchangerate-api.com/v6/53d8317136c6b635566c64f4/latest/"
+    checkInputSource = "second"
+    let url = "https://v6.exchangerate-api.com/v6/9e5585c35cd27d91d15a7b53/latest/"
     fetch(`${url}${m}`)
     .then((res) => res.json())
     .then((data) => {
@@ -157,15 +191,13 @@ secondInput.addEventListener("input" , () => {
 
 
 buttons1.forEach(button => {
-    button.addEventListener("click" , () => {
+    button.addEventListener("click" , () => {        
         buttons1.forEach(btn1 => {
-            btn1.style.backgroundColor = "white";
-            btn1.style.color = "#C6C6C6"
+            btn1.classList.remove("chosen-button")
         })
-        button.style.backgroundColor = "#833ae0";
-        button.style.color = "white";
+        button.classList.add("chosen-button")
         m = button.textContent;
-    let url = "https://v6.exchangerate-api.com/v6/53d8317136c6b635566c64f4/latest/"
+        let url = "https://v6.exchangerate-api.com/v6/9e5585c35cd27d91d15a7b53/latest/"
         fetch(`${url}${m}`)
         .then((res) => res.json())
         .then((data) => {
@@ -181,29 +213,76 @@ buttons1.forEach(button => {
                 currentRate = exchangeRates.GBP;
             }
 
-            newValue1 = `1 ${m} = ${currentRate} ${n}`;
-            newValue2 = `1 ${n} = ${(1 / currentRate).toFixed(5)} ${m}`;
-            firstInfo.textContent = newValue1;
-            secondInfo.textContent = newValue2;
-            if(checkInputSource = "first" || checkInputSource == ""){
+            firstInfo.textContent = `1 ${m} = ${currentRate} ${n}`;
+            secondInfo.textContent = `1 ${n} = ${(1 / currentRate).toFixed(5)} ${m}`;
+            if(checkInputSource == "first" || checkInputSource == ""){
                 secondInput.value = (firstInput.value * currentRate).toFixed(5);
+            }else if(checkInputSource == "second"){
+                firstInput.value = (secondInput.value * currentRate).toFixed(5);
             }
         })
         .catch((error) => {
-            console.error("Error", error);
+            console.error("Error t", error);
+            if (error == "TypeError: Failed to fetch"){
+                console.log("tt");
+                footer.style.display = "flex"
+                let checkForSameButton = button.textContent;
+                buttons2.forEach(btn => {
+                    let checkForSameButton2 = btn.textContent;
+                    if(btn.classList.contains("chosen-button")){
+                        firstInput.classList.remove("unable-fetch")
+                        secondInput.classList.remove("unable-fetch")
+                        if(checkForSameButton == checkForSameButton2){
+                            if(checkInputSource == "first" || checkInputSource == ""){
+                                secondInput.value = firstInput.value
+                            }else{
+                                firstInput.value = secondInput.value
+                            }                                       
+                        }else{
+                            if(checkInputSource == "first" || checkInputSource == ""){
+                                secondInput.value = "Unable to fetch data"
+                                secondInput.classList.add("unable-fetch")
+                                // secondInput.classList.add("unable-fetch")
+                            }else{
+                                firstInput.value = "Unable to fetch data";
+                                firstInput.classList.add("unable-fetch")
+                                // firstInput.classList.add("unable-fetch")
+                            } 
+                        }
+                    }  
+                })    
+            }
+            
         });
     })
 })
 buttons2.forEach(button => {
     button.addEventListener("click" , () => {
+
+        // let checkForSameButton = button.textContent;
+        // buttons1.forEach(btn => {
+        //     let checkForSameButton2 = btn.textContent;
+        //     if(btn.classList.contains("chosen-button")){
+        //         if(checkForSameButton == checkForSameButton2){
+        //             if(checkInputSource == "first" || checkInputSource == ""){
+        //                 secondInput.value = firstInput.value
+        //             }else{
+        //                 firstInput.value = secondInput.value
+        //             }
+        //                 console.log("error");
+                                       
+        //         } 
+        //     }  
+        // })
+
+
+
         buttons2.forEach(btn2 => {
-            btn2.style.backgroundColor = "white";
-            btn2.style.color = "#C6C6C6"
+            btn2.classList.remove("chosen-button")
         })
-        button.style.backgroundColor = "#833ae0";
-        button.style.color = "white";
+        button.classList.add("chosen-button")
         n = button.textContent;
-        let url = "https://v6.exchangerate-api.com/v6/53d8317136c6b635566c64f4/latest/"
+        let url = "https://v6.exchangerate-api.com/v6/9e5585c35cd27d91d15a7b53/latest/"
         fetch(`${url}${m}`)
         .then((res) => res.json())
         .then((data) => {
@@ -218,19 +297,46 @@ buttons2.forEach(button => {
                 } else if (n === "GBP") {
                     currentRate = exchangeRates.GBP;
                 }    
-                newValue1 = `1 ${m} = ${currentRate} ${n}`;
-                newValue2 = `1 ${n} = ${(1 / currentRate).toFixed(5)} ${m}`;
-                firstInfo.textContent = newValue1;
-                secondInfo.textContent = newValue2;
-                if(checkInputSource = "second"){
+                firstInfo.textContent = `1 ${m} = ${currentRate} ${n}`;
+                secondInfo.textContent = `1 ${n} = ${(1 / currentRate).toFixed(5)} ${m}`;
+                
+                if(checkInputSource == "second"){
                     firstInput.value = (secondInput.value * currentRate).toFixed(5);
-                }else{
+                }else if(checkInputSource == "first" || checkInputSource == ""){
                     secondInput.value = (firstInput.value * currentRate).toFixed(5);
                 }
         })
         .catch((error) => {
-            console.error("Error", error);
+            console.error("Error ttt", error);
+            if (error == "TypeError: Failed to fetch"){
+                console.log("tt");
+                footer.style.display = "flex"
+                let checkForSameButton = button.textContent;
+                buttons1.forEach(btn => {
+                    let checkForSameButton2 = btn.textContent;
+                    if(btn.classList.contains("chosen-button")){
+                        if(checkForSameButton == checkForSameButton2){
+                            firstInput.classList.remove("unable-fetch")
+                            secondInput.classList.remove("unable-fetch")
+                            if(checkInputSource == "first" || checkInputSource == ""){
+                                secondInput.value = firstInput.value
+                            }else{
+                                firstInput.value = secondInput.value
+                            }                                       
+                        }else{
+                            if(checkInputSource == "first" || checkInputSource == ""){
+                                secondInput.value = "Unable to fetch data"
+                                secondInput.classList.add("unable-fetch")
+                            }else{
+                                firstInput.value = "Unable to fetch data";
+                                firstInput.classList.add("unable-fetch")
+                            } 
+                        }
+                    }  
+                })    
+            }
         });
     })
 })
+
 
