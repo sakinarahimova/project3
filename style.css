@@ -194,10 +194,6 @@ button.chosen-button {
     color: white;
     background-color: #833ae0;
 }
-.unable-fetch{
-    font-size: 24px;
-    color: #C6C6C6;
-}
 
 @media screen and (max-width: 700px){
      .wrapper{
