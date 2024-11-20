@@ -1,3 +1,5 @@
+console.log("0." * 9);
+
 let footer = document.querySelector("footer");
 fetch("https://v6.exchangerate-api.com/v6/9e5585c35cd27d91d15a7b53/latest/USD")
 .then(() => console.log("Fetch was successful"))
@@ -49,7 +51,12 @@ firstInput.addEventListener("keydown", (event) => {
     if(changedInp !== ""){
         event.preventDefault()
     }
-    
+    if(k !== "0" && !firstInput.value.includes(".")){
+        firstInput.value = firstInput.value.replace(/^0+/, "");       
+    }
+    if((k == "." || k == "," ) && firstInput.value < 1){
+        firstInput.value = "0."
+    }
     if((k == "." || k == "," )&& firstInput.value.includes(".")){
         event.preventDefault()
     }
@@ -61,10 +68,8 @@ firstInput.addEventListener("keydown", (event) => {
         }
     }
     if(firstInput.value.includes(".")){
-        console.log(firstInput.value);
         
         let a = firstInput.value.split(".")[1]
-        console.log(a);
         
         if(a.length >= 5){
             if (k !== "Backspace" && k !== "Delete" && k !== "ArrowLeft" && k !== "ArrowRight") {
@@ -78,16 +83,18 @@ secondInput.addEventListener("keydown", (event) => {
     checkInputSource = "second"
     let k = event.key;
     let changedInp = k.replace(/[0-9,\.]/, '');
-    // if (secondInput.value[0] == "0" && secondInput.value.length > 1) {
-    //     secondInput.value = secondInput.value.replace(/^0+/, "");
-    // }
     if (k === "Backspace" || k === "Delete" || k === "ArrowLeft" || k === "ArrowRight") {
         return;
     }
     if(changedInp !== ""){
         event.preventDefault()
     }
-    
+    if(k !== "0" && !secondInput.value.includes(".")){
+        secondInput.value = secondInput.value.replace(/^0+/, "");           
+    }
+    if((k == "." || k == ",") && secondInput.value < 1){
+        secondInput.value = "0."
+    }
     if((k == "." || k == "," )&& secondInput.value.includes(".")){
         event.preventDefault()
     }
@@ -102,7 +109,6 @@ secondInput.addEventListener("keydown", (event) => {
         console.log(secondInput.value);
         
         let a = secondInput.value.split(".")[1]
-        console.log(a);
         
         if(a.length >= 5){
             if (k !== "Backspace" && k !== "Delete" && k !== "ArrowLeft" && k !== "ArrowRight") {
@@ -110,11 +116,13 @@ secondInput.addEventListener("keydown", (event) => {
             }
         }
     }
+    let a = secondInput.value - secondInput.value % 1
+    console.log(a)
 });
   
 
 
-
+   
 
 
 let m = "RUB";
@@ -151,8 +159,12 @@ firstInput.addEventListener("input" , () => {
                 currentRate = exchangeRates.EUR;
             } else if (n === "GBP") {
                 currentRate = exchangeRates.GBP;
-            }    
-            secondInput.value = (firstInput.value * currentRate).toFixed(5);
+            }
+            if(firstInput.value == "."){
+                secondInput.value = (0 * currentRate).toFixed(5);
+            }else{
+                secondInput.value = (firstInput.value * currentRate).toFixed(5);                
+            }
             firstInfo.textContent = `1 ${m} = ${currentRate} ${n}`;
             secondInfo.textContent = `1 ${n} = ${(1 / currentRate).toFixed(5)} ${m}`;
     })
@@ -177,8 +189,12 @@ secondInput.addEventListener("input" , () => {
                 currentRate = exchangeRates.EUR;
             } else if (n === "GBP") {
                 currentRate = exchangeRates.GBP;
-            }    
-            firstInput.value = (secondInput.value / currentRate).toFixed(5);
+            }
+            if(secondInput.value == "."){
+                firstInput.value = (0 / currentRate).toFixed(5);
+            }else{
+                firstInput.value = (secondInput.value / currentRate).toFixed(5);                
+            }
             firstInfo.textContent = `1 ${m} = ${currentRate} ${n}`;
             secondInfo.textContent = `1 ${n} = ${(1 / currentRate).toFixed(5)} ${m}`;
     })
@@ -214,11 +230,21 @@ buttons1.forEach(button => {
             }
 
             firstInfo.textContent = `1 ${m} = ${currentRate} ${n}`;
-            secondInfo.textContent = `1 ${n} = ${(1 / currentRate).toFixed(5)} ${m}`;
+            secondInfo.textContent = `1 ${n} = ${(1 / currentRate).toFixed(5)} ${m}`;                      
             if(checkInputSource == "first" || checkInputSource == ""){
-                secondInput.value = (firstInput.value * currentRate).toFixed(5);
+                if(firstInput.value == "."){
+                    firstInput.value = "0."
+                    secondInput.value = (0 * currentRate).toFixed(5);
+                }else{
+                    secondInput.value = (firstInput.value * currentRate).toFixed(5);
+                }
             }else if(checkInputSource == "second"){
-                firstInput.value = (secondInput.value * currentRate).toFixed(5);
+                if(secondInput.value == "."){
+                    secondInput.value = "0."
+                    firstInput.value = (0 * currentRate).toFixed(5);
+                }else{
+                    firstInput.value = (secondInput.value * currentRate).toFixed(5);
+                }
             }
         })
         .catch((error) => {
@@ -240,13 +266,11 @@ buttons1.forEach(button => {
                             }                                       
                         }else{
                             if(checkInputSource == "first" || checkInputSource == ""){
-                                secondInput.value = "Unable to fetch data"
+                                secondInput.placeholder = "Unable to fetch data";
                                 secondInput.classList.add("unable-fetch")
-                                // secondInput.classList.add("unable-fetch")
                             }else{
-                                firstInput.value = "Unable to fetch data";
+                                firstInput.placeholder = "Unable to fetch data";
                                 firstInput.classList.add("unable-fetch")
-                                // firstInput.classList.add("unable-fetch")
                             } 
                         }
                     }  
@@ -258,25 +282,6 @@ buttons1.forEach(button => {
 })
 buttons2.forEach(button => {
     button.addEventListener("click" , () => {
-
-        // let checkForSameButton = button.textContent;
-        // buttons1.forEach(btn => {
-        //     let checkForSameButton2 = btn.textContent;
-        //     if(btn.classList.contains("chosen-button")){
-        //         if(checkForSameButton == checkForSameButton2){
-        //             if(checkInputSource == "first" || checkInputSource == ""){
-        //                 secondInput.value = firstInput.value
-        //             }else{
-        //                 firstInput.value = secondInput.value
-        //             }
-        //                 console.log("error");
-                                       
-        //         } 
-        //     }  
-        // })
-
-
-
         buttons2.forEach(btn2 => {
             btn2.classList.remove("chosen-button")
         })
@@ -301,9 +306,19 @@ buttons2.forEach(button => {
                 secondInfo.textContent = `1 ${n} = ${(1 / currentRate).toFixed(5)} ${m}`;
                 
                 if(checkInputSource == "second"){
-                    firstInput.value = (secondInput.value * currentRate).toFixed(5);
+                    if(secondInput.value == "."){
+                        secondInput.value = "0."
+                        firstInput.value = (0 * currentRate).toFixed(5);
+                    }else{
+                        firstInput.value = (secondInput.value * currentRate).toFixed(5);
+                    }
                 }else if(checkInputSource == "first" || checkInputSource == ""){
-                    secondInput.value = (firstInput.value * currentRate).toFixed(5);
+                    if(firstInput.value == "."){
+                        firstInput.value = "0."
+                        secondInput.value = (0 * currentRate).toFixed(5);
+                    }else{
+                        secondInput.value = (firstInput.value * currentRate).toFixed(5);
+                    }
                 }
         })
         .catch((error) => {
@@ -338,5 +353,4 @@ buttons2.forEach(button => {
         });
     })
 })
-
 

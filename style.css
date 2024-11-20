@@ -229,6 +229,7 @@ button.chosen-button {
         width: 200px;
     }
 }
+
 footer{
     display: none;
     justify-content: center;
@@ -239,8 +240,14 @@ footer{
     width: 250px;
     padding: 20px;
     display: flex;
+    flex-direction: column;
     justify-content: center;
 }
 .footer-container img{
     width: 200px;
+}
+.footer-container p{
+    text-align: center;
+    font-size: 36px;
+    color: #959BA4;
 }
