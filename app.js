@@ -1,12 +1,10 @@
 let footer = document.querySelector("footer");
 window.addEventListener('offline', () => {
     footer.style.display = "flex";
-    typeOfError = "fail"
-            console.log("99");
 })
-// window.addEventListener('online', () => {
-//     footer.style.display = "none";
-// })
+window.addEventListener('online', () => {
+    footer.style.display = "none";
+})
 
 let menuButton = document.querySelector(".menu-button");
 let headerMenuList = document.querySelector(".header-menu-list");
@@ -24,12 +22,13 @@ let secondInfo = document.querySelector(".second-info");
 let buttons1 = document.querySelectorAll(".buttons1 button");
 let buttons2 = document.querySelectorAll(".buttons2 button");
 
-firstInput.value = 5000;
-secondInput.value = 49.85500;
+firstInput.value = 0;
+secondInput.value = 0;
 let typeOfError
 
-function initialCall(){
-    fetch('https://v6.exchangerate-api.com/v6/f83fa04de97a675ff693e12f/latest/RUB')
+
+function initialCall() {
+      fetch('https://v6.exchangerate-api.com/v6/f83fa04de97a675ff693e12f/latest/RUB')
     .then(res => res.json())
     .then(data => {
         typeOfError = ""
@@ -40,18 +39,13 @@ function initialCall(){
         firstInfo.textContent = `1 RUB = ${currentRate} USD`;
         secondInfo.textContent = `1 USD = ${(1 / currentRate).toFixed(5)} RUB`;
     })
-    .catch(error => {
-        if (error == "TypeError: Failed to fetch"){
-            typeOfError = "fail"
-            console.log("99");
-            
-        }
-    });
-}
-// initialCall()
-// document.addEventListener("click" , () =>{
-//     initialCall()
-// })
+    
+  }
+
+  if (navigator.onLine) {
+    console.log("Network is online!");
+    initialCall()
+  } 
 
 
 function typying(event , i){
@@ -109,6 +103,7 @@ function handleInput(source) {
     fetch(`${url}${m}`)
         .then((res) => res.json())
         .then((data) => {
+            footer.style.display = "none";
             secondInput.placeholder = "0";
             firstInput.placeholder = "0";
             const exchangeRates = data.conversion_rates;
@@ -130,6 +125,46 @@ function handleInput(source) {
                 firstInput.value = (secondInput.value / currentRate).toFixed(5);
             }
         })
+        .catch(error => {
+            if (error == "TypeError: Failed to fetch"){
+                footer.style.display = "flex";
+    
+                buttons1.forEach(btn => {                        
+                    let checkForSameButton = btn.textContent;   
+                    let checkForSameButton2 
+                    if(btn.classList.contains("chosen-button")){
+                        buttons2.forEach(btn2 => {
+                            if (btn2.classList.contains("chosen-button")) {
+                                checkForSameButton2 = btn2.textContent;
+                            }
+                        });
+                        if (checkForSameButton == checkForSameButton2) {
+                            console.log("9");
+                            if (checkInputSource === "first" || checkInputSource === "") {
+                                console.log(firstInput.value);                                        
+                                secondInput.value = firstInput.value;
+                                console.log(secondInput.value);
+                            } else {
+                                console.log(secondInput.value);
+                                firstInput.value = secondInput.value;
+                            }
+                        }
+                        else if (checkForSameButton !== checkForSameButton2){                            
+                            if (checkInputSource === "first" || checkInputSource === "") {
+                                secondInput.placeholder = "Error";
+                                secondInput.value = "";
+                            } else {
+                                firstInput.placeholder = "Error";
+                                firstInput.value = "";
+                            }
+                        }
+
+                    } 
+                    
+                });
+            }
+        })
+        
 }
 
 firstInput.addEventListener("input", () => {
@@ -158,44 +193,24 @@ function pick(a, b, button) {
             n = button.textContent;
         }
 
-        if (typeOfError === "fail") {
-            footer.style.display = "flex";
-
-            a.forEach(btn => {
-                let checkForSameButton = btn.textContent;
-
-                b.forEach(btn2 => {
-                    if (btn2.classList.contains("chosen-button")) {
-                        let checkForSameButton2 = btn2.textContent;
-
-                        if (checkForSameButton === checkForSameButton2) {
-                            if (checkInputSource === "first" || checkInputSource === "") {
-                                secondInput.value = firstInput.value;
-                            } else {
-                                firstInput.value = secondInput.value;
-                            }
-                        } else {
-                            if (checkInputSource === "first" || checkInputSource === "") {
-                                secondInput.placeholder = "Error";
-                                secondInput.value = "";
-                            } else {
-                                firstInput.placeholder = "Error";
-                                firstInput.value = "";
-                            }
-                        }
-                    }
-                });
-            });
-            return;
-        }
+    
 
         let url = `https://v6.exchangerate-api.com/v6/f83fa04de97a675ff693e12f/latest/${m}`;
         fetch(url)
             .then((res) => res.json())
             .then((data) => {
+                footer.style.display = "none";
                 const exchangeRates = data.conversion_rates;
-                let currentRate = exchangeRates[n];
-
+                let currentRate
+                if (n === "USD") {
+                    currentRate = exchangeRates.USD;
+                } else if (n === "RUB") {
+                    currentRate = exchangeRates.RUB;
+                } else if (n === "EUR") {
+                    currentRate = exchangeRates.EUR;
+                } else if (n === "GBP") {
+                    currentRate = exchangeRates.GBP;
+                }
                 firstInfo.textContent = `1 ${m} = ${currentRate} ${n}`;
                 secondInfo.textContent = `1 ${n} = ${(1 / currentRate).toFixed(5)} ${m}`;
                 if (checkInputSource === "first" || checkInputSource === "") {
@@ -203,7 +218,46 @@ function pick(a, b, button) {
                 } else if (checkInputSource === "second") {
                     firstInput.value = (secondInput.value / currentRate).toFixed(5);
                 }
-            });
+            })
+            .catch(error => {
+                if (error == "TypeError: Failed to fetch"){
+                    footer.style.display = "flex";
+        
+                    a.forEach(btn => {                        
+                        let checkForSameButton = btn.textContent;   
+                        let checkForSameButton2 
+                        if(btn.classList.contains("chosen-button")){
+                            b.forEach(btn2 => {
+                                if (btn2.classList.contains("chosen-button")) {
+                                    checkForSameButton2 = btn2.textContent;
+                                }
+                            });
+                            if (checkForSameButton == checkForSameButton2) {
+                                console.log("9");
+                                if (checkInputSource === "first" || checkInputSource === "") {
+                                    console.log(firstInput.value);                                        
+                                    secondInput.value = firstInput.value;
+                                    console.log(secondInput.value);
+                                } else {
+                                    console.log(secondInput.value);
+                                    firstInput.value = secondInput.value;
+                                }
+                            }
+                            else if (checkForSameButton !== checkForSameButton2){                            
+                                if (checkInputSource === "first" || checkInputSource === "") {
+                                    secondInput.placeholder = "Error";
+                                    secondInput.value = "";
+                                } else {
+                                    firstInput.placeholder = "Error";
+                                    firstInput.value = "";
+                                }
+                            }
+
+                        } 
+                        
+                    });
+                }
+            })
     });
 }
 
