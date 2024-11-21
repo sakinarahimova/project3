@@ -227,6 +227,7 @@ button.chosen-button {
     .boxes{
         margin-top: 20px;
         width: 80%;
+        min-width: 240px;
     }
 }
 
