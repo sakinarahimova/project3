@@ -4,6 +4,7 @@ window.addEventListener('offline', () => {
 })
 window.addEventListener('online', () => {
     footer.style.display = "none";
+    handleInput(checkInputSource)
 })
 
 let menuButton = document.querySelector(".menu-button");
