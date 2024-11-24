@@ -1,6 +1,14 @@
 let footer = document.querySelector("footer");
 window.addEventListener('offline', () => {
     footer.style.display = "flex";
+    firstInput.addEventListener("input", () => {
+        checkInputSource = "first";
+        inputError(checkInputSource);
+    });
+    secondInput.addEventListener("input", () => {
+        checkInputSource = "second";
+        inputError(checkInputSource);
+    });
 })
 window.addEventListener('online', () => {
     footer.style.display = "none";
@@ -29,7 +37,7 @@ let typeOfError
 
 
 function initialCall() {
-      fetch('https://v6.exchangerate-api.com/v6/f83fa04de97a675ff693e12f/latest/RUB')
+    fetch('https://v6.exchangerate-api.com/v6/f83fa04de97a675ff693e12f/latest/RUB')
     .then(res => res.json())
     .then(data => {
         typeOfError = ""
@@ -92,8 +100,8 @@ secondInput.addEventListener("keydown", (event) => {
 
 let m = "RUB";
 let n = "USD";
-firstInfo.textContent = "1 RUB = 0.0135 USD";
-secondInfo.textContent = "1 USD = 73.8896 RUB";
+firstInfo.textContent = "1 RUB = 0.009787 USD"
+secondInfo.textContent = "1 USD = 102.17636 RUB";
 
 function handleInput(source) {
     if (!navigator.onLine) {
@@ -126,48 +134,42 @@ function handleInput(source) {
                 firstInput.value = (secondInput.value / currentRate).toFixed(5);
             }
         })
-        .catch(error => {
-            if (error == "TypeError: Failed to fetch"){
-                footer.style.display = "flex";
-    
-                buttons1.forEach(btn => {                        
-                    let checkForSameButton = btn.textContent;   
-                    let checkForSameButton2 
-                    if(btn.classList.contains("chosen-button")){
-                        buttons2.forEach(btn2 => {
-                            if (btn2.classList.contains("chosen-button")) {
-                                checkForSameButton2 = btn2.textContent;
-                            }
-                        });
-                        if (checkForSameButton == checkForSameButton2) {
-                            console.log("9");
-                            if (checkInputSource === "first" || checkInputSource === "") {
-                                console.log(firstInput.value);                                        
-                                secondInput.value = firstInput.value;
-                                console.log(secondInput.value);
-                            } else {
-                                console.log(secondInput.value);
-                                firstInput.value = secondInput.value;
-                            }
-                        }
-                        else if (checkForSameButton !== checkForSameButton2){                            
-                            if (checkInputSource === "first" || checkInputSource === "") {
-                                secondInput.placeholder = "Error";
-                                secondInput.value = "";
-                            } else {
-                                firstInput.placeholder = "Error";
-                                firstInput.value = "";
-                            }
-                        }
-
-                    } 
-                    
-                });
-            }
-        })
         
 }
 
+function inputError(){
+    footer.style.display = "flex";    
+    buttons1.forEach(btn => {                        
+        let checkForSameButton = btn.textContent;   
+        let checkForSameButton2 
+        if(btn.classList.contains("chosen-button")){
+            buttons2.forEach(btn2 => {
+                if (btn2.classList.contains("chosen-button")) {
+                    checkForSameButton2 = btn2.textContent;
+                }
+            });
+            if (checkForSameButton == checkForSameButton2) {
+                if (checkInputSource === "first" || checkInputSource === "") {
+                    secondInput.value = firstInput.value;
+                } else {
+                    console.log(secondInput.value);
+                    firstInput.value = secondInput.value;
+                }
+            }
+            else if (checkForSameButton !== checkForSameButton2){                            
+                if (checkInputSource === "first" || checkInputSource === "") {
+                    secondInput.placeholder = "Error";
+                    secondInput.value = "";
+                } else {
+                    firstInput.placeholder = "Error";
+                    firstInput.value = "";
+                }
+            }
+
+        } 
+        
+    });
+}
 firstInput.addEventListener("input", () => {
     checkInputSource = "first";
     handleInput(checkInputSource);
@@ -193,9 +195,6 @@ function pick(a, b, button) {
         } else if (a === buttons2) {
             n = button.textContent;
         }
-
-    
-
         let url = `https://v6.exchangerate-api.com/v6/f83fa04de97a675ff693e12f/latest/${m}`;
         fetch(url)
             .then((res) => res.json())
@@ -221,6 +220,7 @@ function pick(a, b, button) {
                 }
             })
             .catch(error => {
+                console.log("99 + " + error);                
                 if (error == "TypeError: Failed to fetch"){
                     footer.style.display = "flex";
         
@@ -261,8 +261,7 @@ function pick(a, b, button) {
             })
     });
 }
-
-
+ 
 buttons1.forEach(buttonItem => {
     pick(buttons1, buttons2 , buttonItem);
 });
