@@ -37,7 +37,7 @@ let typeOfError
 
 
 function initialCall() {
-    fetch('https://v6.exchangerate-api.com/v6/f83fa04de97a675ff693e12f/latest/RUB')
+    fetch('https://v6.exchangerate-api.com/v6/0f470ae253c5075e07c263d4/latest/RUB')
     .then(res => res.json())
     .then(data => {
         typeOfError = ""
@@ -108,7 +108,7 @@ function handleInput(source) {
         footer.style.display = "flex";
         return;
     }
-    let url = "https://v6.exchangerate-api.com/v6/f83fa04de97a675ff693e12f/latest/";
+    let url = "https://v6.exchangerate-api.com/v6/0f470ae253c5075e07c263d4/latest/";
     fetch(`${url}${m}`)
         .then((res) => res.json())
         .then((data) => {
@@ -195,7 +195,7 @@ function pick(a, b, button) {
         } else if (a === buttons2) {
             n = button.textContent;
         }
-        let url = `https://v6.exchangerate-api.com/v6/f83fa04de97a675ff693e12f/latest/${m}`;
+        let url = `https://v6.exchangerate-api.com/v6/0f470ae253c5075e07c263d4/latest/${m}`;
         fetch(url)
             .then((res) => res.json())
             .then((data) => {
